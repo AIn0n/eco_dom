@@ -2,6 +2,19 @@
     import Header from "../_components/Header.svelte";
 </script>
 
+<style>
+    .app {
+        padding-top: 5%;
+        padding-left: 25%;
+        padding-right: 25%;
+    }
+    .section {
+        padding-left: 5%;
+    }
+    .media {
+        padding-left: 5%;
+    }
+</style>
 
 <Header />
 <section class="section">
