@@ -4,16 +4,20 @@
   
   const url = "http://127.0.0.1:5000";
   let rooms_res;
+  let devices_res;
   let newRoomName = "";
   let msg = "";
   let isNewMsg = false;
 
-  refresh();
+  rooms_refresh();
 
-  function refresh() {
+  function rooms_refresh() {
     rooms_res = fetch(url + "/rooms", { method : "GET"}).then(r => r.json());
   };
-  
+
+  function get_devices(id) {
+    devices_res = fetch(url + "/rooms/" + id + "/devices");
+  }  
   
   async function createRoom() {
     const response = fetch(url + "/create_room",
@@ -21,20 +25,22 @@
       method : 'POST',
       body: new URLSearchParams({
         "name" : newRoomName
-      })
-    }).then(r => refresh()).catch(e => {
-      msg = e.message;
-      isNewMsg = true;
-    });
+      })})
+    .then(r => {if (r.status == 200) { 
+      rooms_refresh(); };})
+      .catch(e => {
+        msg = e.message;
+        isNewMsg = true;
+      });
   }
 </script>
 
 <Header />
 <div class="columns">
-    <div class="column is-one-fifth">
+    <div class="column is-one-fifth has-background-light">
       <div class="columns is-1 section">
         <input class="input is-rounded is-small column is-11" type="text" bind:value={newRoomName} placeholder="add new room" required>
-        <button class="button is-primary is-small is-rounded column" on:click={createRoom}>+</button>
+        <button class="button is-primary is-rounded is-small column" on:click={createRoom}>add</button>
       </div>
       <aside class="menu">
         <ul class="menu-list">
@@ -43,7 +49,7 @@
           {:then rooms}
             {#if rooms.length > 0}
               {#each rooms as room}
-                <li><a>{room}</a></li>
+                <li><button class="button is-primary is-rounded is-info is-fullwidth" on:click={get_devices(room["id"])}>{room["name"]}</button></li>
               {/each}
             {:else}
             <li>
