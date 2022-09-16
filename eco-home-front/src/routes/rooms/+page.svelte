@@ -5,7 +5,8 @@
   const url = "http://127.0.0.1:5000";
   let rooms_res;
   let newRoomName = "";
-  let created_room = false;
+  let msg = "";
+  let isNewMsg = false;
 
   refresh();
 
@@ -21,22 +22,24 @@
       body: new URLSearchParams({
         "name" : newRoomName
       })
-    }).then(r => r.json());
-    refresh();
+    }).then(r => refresh()).catch(e => {
+      msg = e.message;
+      isNewMsg = true;
+    });
   }
 </script>
 
 <Header />
 <div class="columns">
     <div class="column is-one-fifth">
-      <div class="section columns is-1">
+      <div class="columns is-1 section">
         <input class="input is-rounded is-small column is-11" type="text" bind:value={newRoomName} placeholder="add new room" required>
         <button class="button is-primary is-small is-rounded column" on:click={createRoom}>+</button>
       </div>
       <aside class="menu">
         <ul class="menu-list">
           {#await rooms_res}
-            <p>waiting for data</p>
+            <progress class="progress is-small is-primary" max="100">15%</progress>
           {:then rooms}
             {#if rooms.length > 0}
               {#each rooms as room}
@@ -47,8 +50,6 @@
               <a>There are no rooms available!</a>
             </li>
             {/if}
-          {:catch error}
-            <p> {error.message} </p>
           {/await}
         </ul>
       </aside>

@@ -14,6 +14,8 @@ CREATE TABLE rooms
 
 ALTER TABLE IF EXISTS rooms
     OWNER to postgres;
+
+ADD CONSTRAINT ct_name UNIQUE (name);
 """)
 
 #create enum type
